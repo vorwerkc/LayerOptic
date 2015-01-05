@@ -271,7 +271,7 @@ def read(N):
 		for k in xrange(0,3):
 			for l in xrange(0,3):
 				if len(data[str(k)+str(l)]) != 0:
-					inter[k,l]=data[str(k)+str(l)][0]
+					inter[k,l]=data[str(k)+str(l)][i]
 		epsilon.append(inter)
 	return epsilon, data['w00']
 #-----------------------------------------------------------------
@@ -295,7 +295,7 @@ def read_sub(w):
 	epsilon=[]
 	inter=np.zeros((3,3),'complex')
 	for i in xrange(0,3):
-		inter[i,i]=6.9
+		inter[i,i]=11.8336
 	for i in xrange(0,len(w)):
 		epsilon.append(inter)
 	return epsilon
@@ -373,10 +373,10 @@ def io():
 
 #sigma, beta0,t, N=io() #angle of polarization, angle of incoming beam, thickness of layers, Number of layers
 alpha=0.
-sigma=math.pi/2.
+sigma=0.
 beta0=0.
 
-t=[47.*10.**(-10)]
+t=[10.*10.**(-9)]
 N=1            
 EPS=[]
 for i in xrange(0,N+2):
@@ -389,7 +389,10 @@ for i in xrange(0,N+2):
 		EPS.append(read(i)[0])
 
 w,t,b=scale(w,t)
-print 'len(EPS)', len(EPS)
+print '********************************************************'
+print 'EPS[1]'
+print EPS[1]
+print '********************************************************'
 #                         1.POLARIZATION DEPENDENCY
 if hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False:
 	for k in xrange(0,len(sigma)):
