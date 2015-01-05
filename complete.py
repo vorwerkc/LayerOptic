@@ -108,16 +108,6 @@ def comp_pol(alpha, beta, gamma, epsilon, w):
 		
 		Q1[:,l]=np.cross(k,P[:,l])
 		Q[:,l]=1./(w*mu)*Q1[:,l]
-	#print 'ELECTRIC POLARIZATION VECTORS:'
-	#print 'P1:', P[:,0]
-	#print 'P2:', P[:,1]
-	#print 'P3:', P[:,2]
-	#print 'P4:', P[:,3]
-	#print 'MAGNETIC POLARIZATION VECTORS:'
-	#print 'Q1:', Q[:,0]
-	#print 'Q2:', Q[:,1]
-	#print 'Q3:', Q[:,2]
-	#print 'Q4:', Q[:,3]
 
 	return P,Q
 
@@ -389,10 +379,6 @@ for i in xrange(0,N+2):
 		EPS.append(read(i)[0])
 
 w,t,b=scale(w,t)
-print '********************************************************'
-print 'EPS[1]'
-print EPS[1]
-print '********************************************************'
 #                         1.POLARIZATION DEPENDENCY
 if hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False:
 	for k in xrange(0,len(sigma)):
@@ -449,9 +435,8 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len
 	with open('reflection.out','w') as f, open('transmission.out','w') as g, open('absorbance.out','w') as h:
 		#A0=[math.sin(sigma),math.cos(sigma)]
 		A0=[1.,0.]
-		print 'A0=',A0
+		
 		for i in xrange(0,len(w)):
-			print 'Frequency Point ', i
 			beta=w[i]/c*math.sin(beta0)
 			R_cof=[]
 			T_cof=[]
@@ -459,9 +444,7 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len
 			T=[]
 			T_ges=[]
 			for j in xrange(1,(len(EPS))-1):  #loop over layers
-				print 'Layer Number ', j
 				T.append(const_matrix(alpha, beta, EPS[j][i], w[i],t[j-1]))
-			print 'Substrate and Vacuum'
 			D_inv,D,p,q=const_matrix2(alpha, beta, EPS[0][i], EPS[-1][i], w[i])
 
 			T_ges=T_mult(T,D_inv,D)
