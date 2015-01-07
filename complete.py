@@ -52,7 +52,6 @@ def quartic_solve(alpha, beta, epsilon, omega):
 			gamma[1]=gamma1[i]
 		elif gamma1[i]> 0.0 and gamma[1]!=0.+0.j:
 			gamma[3]=gamma1[i]
-
 	return gamma
 #-----------------------------------------------------------------
 def comp_eig(alpha, beta, gamma, epsilon, omega):
@@ -86,7 +85,6 @@ def comp_pol(alpha, beta, gamma, epsilon, w):
 	Q=np.zeros((3,4),'complex')
 	Q1=np.zeros((3,4),'complex')
 	multi=np.zeros((4),'int')
-
 	for k in xrange(0,4):
 
 		eigval,eigvector=comp_eig(alpha, beta, gamma[k], epsilon, w)
@@ -98,16 +96,26 @@ def comp_pol(alpha, beta, gamma, epsilon, w):
 		else:
 			P[:,0]=[1.,0.,0.]
 			P[:,1]=[1.,0.,0.]
-			P[:,2]=[0.,1./math.sqrt(abs(beta)**2+abs(gamma[2])**2)*gamma[2],-1./math.sqrt(abs(beta)**2+abs(gamma[2])**2)*beta]
-			P[:,3]=[0.,1./math.sqrt(abs(beta)**2+abs(gamma[3])**2)*gamma[3],-1./math.sqrt(abs(beta)**2+abs(gamma[3])**2)*beta]
+			P[:,2]=[0.,1./math.sqrt(abs(beta)**2+abs(gamma[2].real)**2)*gamma[2].real,-1./math.sqrt(abs(beta)**2+abs(gamma[2].real)**2)*beta]
+			P[:,3]=[0.,1./math.sqrt(abs(beta)**2+abs(gamma[3].real)**2)*gamma[3].real,-1./math.sqrt(abs(beta)**2+abs(gamma[3].real)**2)*beta]
 			if multi[k] != 2:
-				print 'Possible Problem with Scaling of Frequency!'
+				print 'Possible Problem with Scaling of Frequency! multiplicity[',k,']=', multi[k]
 			break
 	for l in xrange(0,4):
 		k=[alpha, beta, gamma[l]]
 		
 		Q1[:,l]=np.cross(k,P[:,l])
 		Q[:,l]=1./(w*mu)*Q1[:,l]
+	#print 'ELECTRIC POLARIZATION VECTORS:'
+	#print 'P1:', P[:,0]
+	#print 'P2:', P[:,1]
+	#print 'P3:', P[:,2]
+	#print 'P4:', P[:,3]
+	#print 'MAGNETIC POLARIZATION VECTORS:'
+	#print 'Q1:', Q[:,0]
+	#print 'Q2:', Q[:,1]
+	#print 'Q3:', Q[:,2]
+	#print 'Q4:', Q[:,3]
 
 	return P,Q
 
@@ -379,6 +387,10 @@ for i in xrange(0,N+2):
 		EPS.append(read(i)[0])
 
 w,t,b=scale(w,t)
+print '********************************************************'
+print 'EPS[1]'
+print EPS[1]
+print '********************************************************'
 #                         1.POLARIZATION DEPENDENCY
 if hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False:
 	for k in xrange(0,len(sigma)):
@@ -435,8 +447,9 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len
 	with open('reflection.out','w') as f, open('transmission.out','w') as g, open('absorbance.out','w') as h:
 		#A0=[math.sin(sigma),math.cos(sigma)]
 		A0=[1.,0.]
-		
+		print 'A0=',A0
 		for i in xrange(0,len(w)):
+			print 'Frequency Point ', i
 			beta=w[i]/c*math.sin(beta0)
 			R_cof=[]
 			T_cof=[]
@@ -444,7 +457,9 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len
 			T=[]
 			T_ges=[]
 			for j in xrange(1,(len(EPS))-1):  #loop over layers
+				print 'Layer Number ', j
 				T.append(const_matrix(alpha, beta, EPS[j][i], w[i],t[j-1]))
+			print 'Substrate and Vacuum'
 			D_inv,D,p,q=const_matrix2(alpha, beta, EPS[0][i], EPS[-1][i], w[i])
 
 			T_ges=T_mult(T,D_inv,D)
@@ -508,6 +523,29 @@ elif hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False and len(
 			f.write('%g  %1.9e %1.9e\n' % (sigma[k]*180./math.pi, R_cof[0], R_cof[1]))
 			g.write('%g  %1.9e %1.9e\n' % (sigma[k]*180./math.pi, T_cof[0], T_cof[1]))
 			h.write('%g  %4.9e %4.9e\n' % (sigma[k]*180./math.pi, a_cof[0], a_cof[1]))
+
+#					      2.POLARIZATION AT ONE FREQUENCY
+elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len(w)==1:
+	A0=[math.sin(sigma),math.cos(sigma)]
+	beta=w[0]/c*math.sin(beta0)
+	R_cof=[]
+	T_cof=[]
+	a_cof=[]		
+	T=[]
+	T_ges=[]
+	for j in xrange(1,(len(EPS))-1):  #loop over layers
+		T.append(const_matrix(alpha, beta, EPS[j][0], w[0],t[j-1]))
+	D_inv,D,p,q=const_matrix2(alpha, beta, EPS[0][0], EPS[-1][0], w[0])
+	T_ges=T_mult(T,D_inv,D)
+	R_cof.append(amplitude(A0,T_ges,p,q)[0])
+	R_cof.append(amplitude(A0,T_ges,p,q)[1])
+	T_cof.append(amplitude(A0,T_ges,p,q)[2])
+	T_cof.append(amplitude(A0,T_ges,p,q)[3])
+	a_cof.append(amplitude(A0,T_ges,p,q)[4])
+	a_cof.append(amplitude(A0,T_ges,p,q)[5])
+	print 'Reflection Coefficients:', R_cof[0], R_cof[1]
+	print 'Transmission Coefficients:', T_cof[0], T_cof[1]
+	
 
 #***************************************************************************************************
 else:
