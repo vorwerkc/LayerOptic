@@ -58,7 +58,33 @@ for i in xrange(0,len(files)):
 		inlist.append(files[i])
 
 # read all frequency lists and elements of the tensors into dictionary
-scheme=inlist[0].split('_')[0]+'_'+inlist[0].split('_')[1]+'_'+inlist[0].split('_')[2]+'_OC'
+scheme=''
+for j in xrange(0,len(inlist[0].split('_'))-1):
+	print j
+	scheme=scheme+inlist[0].split('_')[j]+'_'
+scheme=scheme+'OC'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#scheme=inlist[0].split('_')[0]+'_'+inlist[0].split('_')[1]+'_'+inlist[0].split('_')[2]+'_OC'
 data={}
 for i in xrange(0,3):
 	for j in xrange(0,3):
