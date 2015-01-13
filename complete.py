@@ -336,7 +336,7 @@ def io():
 				  '\n should be varied and the number of steps.                                  '
 			beta=raw_input('>>>> input the boundaries:')
 			if len(beta.split(" ")) > 3 or len(beta.split(" ")) < 3 :
-				sys.exit('Please provide only two numbers!')
+				sys.exit('Please provide three numbers!')
 			beta0=float(beta.split(" ")[0])*math.pi/180.
 			beta1=float(beta.split(" ")[1])*math.pi/180.
 			N=int(beta.split(" ")[2])
@@ -369,11 +369,8 @@ def io():
 
 #time_start=time.clock()
 
-#sigma, beta0,t, N=io() #angle of polarization, angle of incoming beam, thickness of layers, Number of layers
+beta0, sigma, t, N=io() #angle of incoming beam, angle of polarization, thickness of layers, Number of layers
 alpha=0.
-sigma=0.
-beta0=0.
-
 t=[10.*10.**(-9)]
 N=1            
 EPS=[]
@@ -387,14 +384,12 @@ for i in xrange(0,N+2):
 		EPS.append(read(i)[0])
 
 w,t,b=scale(w,t)
-print '********************************************************'
-print 'EPS[1]'
-print EPS[1]
-print '********************************************************'
 #                         1.POLARIZATION DEPENDENCY
 if hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False:
 	for k in xrange(0,len(sigma)):
 		A0=[math.sin(sigma[k]),math.cos(sigma[k])]
+		for l in xrange(0, len(sigma)):
+			print 'A0(', sigma[l],')=', [math.sin(sigma[l]),math.cos(sigma[l])]
 		with open('reflection'+str(k)+'.out','w') as f, open('transmission'+str(k)+'.out','w') as g, open('absorbance'+str(k)+'.out','w') as h:
 			for i in xrange(0,len(w)):
 				beta=w[i]/c*math.sin(beta0)
@@ -413,9 +408,9 @@ if hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False:
 				T_cof.append(amplitude(A0,T_ges,p,q)[3])
 				a_cof.append(amplitude(A0,T_ges,p,q)[4])
 				a_cof.append(amplitude(A0,T_ges,p,q)[5])
-				f.write('%g  %1.9e %1.9e\n' % (w[i]*b, R_cof[0], R_cof[1]))
-				g.write('%g  %1.9e %1.9e\n' % (w[i]*b, T_cof[0], T_cof[1]))
-				h.write('%g  %4.9e %4.9e\n' % (w[i]*b, a_cof[0], a_cof[1]))
+				f.write('%g  %1.9e %1.9e\n' % (w[i]*b*hbar, R_cof[0], R_cof[1]))
+				g.write('%g  %1.9e %1.9e\n' % (w[i]*b*hbar, T_cof[0], T_cof[1]))
+				h.write('%g  %4.9e %4.9e\n' % (w[i]*b*hbar, a_cof[0], a_cof[1]))
 
 #                         1.ANGULAR DEPENDENCY
 elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==True and len(w)!=1:
@@ -445,9 +440,7 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==True and len(
 #                         1.NEITHER ANGULAR NOR POLARIZATION DEPENDENCY
 elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len(w)!=1:
 	with open('reflection.out','w') as f, open('transmission.out','w') as g, open('absorbance.out','w') as h:
-		#A0=[math.sin(sigma),math.cos(sigma)]
-		A0=[1.,0.]
-		print 'A0=',A0
+		A0=[math.sin(sigma),math.cos(sigma)]
 		for i in xrange(0,len(w)):
 			print 'Frequency Point ', i
 			beta=w[i]/c*math.sin(beta0)
