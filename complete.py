@@ -371,7 +371,11 @@ def io():
 
 beta0, sigma, t, N=io() #angle of incoming beam, angle of polarization, thickness of layers, Number of layers
 alpha=0.
-t=[10.*10.**(-9)]
+#sigma=0.
+#beta0=0.
+print 'sigma=',sigma
+print 'beta0=', beta0
+
 N=1            
 EPS=[]
 for i in xrange(0,N+2):
@@ -441,6 +445,8 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==True and len(
 elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len(w)!=1:
 	with open('reflection.out','w') as f, open('transmission.out','w') as g, open('absorbance.out','w') as h:
 		A0=[math.sin(sigma),math.cos(sigma)]
+		#A0=[0.,1.]
+		print 'A0=',A0
 		for i in xrange(0,len(w)):
 			print 'Frequency Point ', i
 			beta=w[i]/c*math.sin(beta0)
