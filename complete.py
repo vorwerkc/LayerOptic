@@ -137,7 +137,7 @@ def const_matrix(alpha, beta, epsilon, w,t):
 				D[i,j]=q[0,j]
 			elif i==3:
 				D[i,j]=q[1,j]
-		P[i,i]=cmath.exp(-1.j*gamma[i]*t)
+		P[i,i]=cmath.exp(1.j*gamma[i]*t)
 	D_inv=np.linalg.inv(D)
 	T=np.dot(np.dot(D,P),D_inv)
 	return T
@@ -210,8 +210,16 @@ def amplitude(A0,T_ges,p,q):
 	T2=c*mu*(abs(S2[0])+abs(S2[1])+abs(S2[2]))
 	R1=abs(A0_out[0])**2
 	R2=abs(A0_out[1])**2
-	a1=0.
-	a2=0.
+	if abs(As_out[0])**2 != 0.0:
+		a1=-math.log(abs(As_out[0])**2)
+	else:
+		a1=0.
+	
+	if abs(As_out[1])**2 != 0.0:
+		a2=-math.log(abs(As_out[1])**2)
+	else:
+		a2=0.
+
 	return R1,R2,T1,T2,a1,a2
 #-----------------------------------------------------------------
 def scale(w,t):
