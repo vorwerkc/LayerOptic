@@ -301,7 +301,7 @@ def read_sub(w):
 	epsilon=[]
 	inter=np.zeros((3,3),'complex')
 	for i in xrange(0,3):
-		inter[i,i]=11.8336
+		inter[i,i]=11.8336                  #set frequency-independent dielectric function
 	for i in xrange(0,len(w)):
 		epsilon.append(inter)
 	return epsilon
@@ -310,41 +310,48 @@ def read_sub(w):
 def io():
 # interactive function to obtain polarization and beam angle and total number of
 # layers and their respective thickness (individual scales can be provided)
-	print '\n     There are two options for the angle of the incoming beam:'\
-      '\n     1 Choose a fixed angle                               '\
-      '\n     2 set a range of numbers by typing "RANGE"       '
+	print '\n       _________________________________________________________________ '\
+	      '\n      |                                                                 |'\
+	      '\n      |                    WELCOME TO LAYEROPTICS                       |'\
+	      '\n      |                                                                 |'\
+	      '\n      |                 written by Christian Vorwerk                    |'\
+	      '\n      |_________________________________________________________________|'\
+	
+	print '\n          There are two options for the ANGLE of the INCOMING BEAM:      '\
+          '\n             1. Type a fixed angle in degree                           '\
+          '\n             2. Set a range of numbers by typing "RANGE"                 '
 
-	alpha=raw_input('Give the angle of the incoming beam:')
+	alpha=raw_input('>>>>>>>>     ')
 
 	if alpha=='RANGE':
-		print '\n Please type the two values between which the angle '\
-			  '\n should be varied and the number of steps.                                  '
-		alpha=raw_input('>>>> input the boundaries:')
+		print '\n          Please type the two values between which the angle '\
+			  '\n             should be varied and the number of steps.        '                          
+		alpha=raw_input('>>>>>>>>     ')
 		if len(alpha.split(" ")) > 3 or len(alpha.split(" ")) < 3 :
-			sys.exit('Please provide only two numbers!')
+			sys.exit('     Please provide two real  numbers and one integer!')
 		alpha0=float(alpha.split(" ")[0])*math.pi/180.
 		alpha1=float(alpha.split(" ")[1])*math.pi/180.
 		N=int(alpha.split(" ")[2])
 		alpha=[]
 		for i in xrange(0,N):
 			alpha.append(alpha0+i*(alpha1-alpha0)/(N-1))
-		print '\n Choose the polarization angle.'\
-			  '\n For an array of beam angles the polarization'\
-			  '\n has to be fixed'
-		beta=raw_input('Give the polarization angle:')
+		print '\n           Choose the polarization angle.'\
+			  '\n      For an array of beam angles the polarization'\
+			  '\n                    has to be fixed'
+		beta=raw_input('>>>>>>>>     ')
 		beta=float(beta)*math.pi/180.
 	else:
 		alpha=float(alpha)*math.pi/180.
-		print '\n     There are two options for the polarization angle:'\
-			  '\n     1 Choose a fixed angle                           '\
-		      '\n     2 set a range of numbers by typing "RANGE"       '
-		beta=raw_input('Give the polarization angle:')
+		print '\n          There are two options for the POLARIZATION ANGLE:'\
+			  '\n             1. Type a fixed angle                           '\
+		      '\n             2. Set a range of numbers by typing "RANGE"       '
+		beta=raw_input('>>>>>>>>     ')
 		if beta=='RANGE':
-			print '\n Please type the two values between which the angle '\
-				  '\n should be varied and the number of steps.                                  '
-			beta=raw_input('>>>> input the boundaries:')
+			print '\n          Please type the two values between which the angle '\
+				  '\n             should be varied and the number of steps.                                   '
+			beta=raw_input('>>>>>>>>     ')
 			if len(beta.split(" ")) > 3 or len(beta.split(" ")) < 3 :
-				sys.exit('Please provide three numbers!')
+				sys.exit('     Please provide two real  numbers and one integer!')
 			beta0=float(beta.split(" ")[0])*math.pi/180.
 			beta1=float(beta.split(" ")[1])*math.pi/180.
 			N=int(beta.split(" ")[2])
@@ -353,12 +360,12 @@ def io():
 				beta.append(beta0+i*(beta1-beta0)/(N-1))
 		else:
 			beta=float(beta)*math.pi/180.
-	print 'Provide the number of layers, not counting vacuum and substrat'
-	N=input('>>Number of layers:')
+	print '             Provide the number of layers, not counting vacuum and substrat'
+	N=input('>>>>>>>>     ')
 	t=[]
-	print 'Please provide in the following the thickness of each layer.'\
-		  'Your also asked to provide the unit of length for each layer.'\
-		  'Choose between: m, mm, nm'
+	print '\n          Please provide in the following the thickness of each layer.'\
+		  '\n         Your also asked to provide the unit of length for each layer.'\
+		  '\n                          Choose between: m, mm, nm'
 	for i in xrange(0,N):
 		print '*******************************************'
 		print 'For Layer ', i+1
@@ -370,21 +377,20 @@ def io():
 		elif a=='nm':
 			b=10.**(-9) 
 		t.append(float(input('>>>>Thickness:'))*b)
+		print '*******************************************'
 	return alpha, beta, t, N
-
+#-----------------------------------------------------------------
+def log(beta0,sigma,N,t):
+	with open('log.out','w')
+	
 #-------------------------MAIN--PROGRAM----------------------------
 		
 
-#time_start=time.clock()
+
 
 beta0, sigma, t, N=io() #angle of incoming beam, angle of polarization, thickness of layers, Number of layers
 alpha=0.
-#sigma=0.
-#beta0=0.
-print 'sigma=',sigma
-print 'beta0=', beta0
 
-N=1            
 EPS=[]
 for i in xrange(0,N+2):
 	if i==0:
@@ -396,6 +402,7 @@ for i in xrange(0,N+2):
 		EPS.append(read(i)[0])
 
 w,t,b=scale(w,t)
+
 #                         1.POLARIZATION DEPENDENCY
 if hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False:
 	for k in xrange(0,len(sigma)):
