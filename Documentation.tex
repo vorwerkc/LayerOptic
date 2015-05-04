@@ -1,0 +1,181 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc} 
+\usepackage{graphicx}
+\usepackage{ngerman}
+\usepackage{amssymb,amsmath}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{color}
+%\documentclass[a4paper,10pt]{article}
+%\usepackage[utf8x]{inputenc}
+%\usepackage{amsmath}
+%\usepackage{graphicx}
+%\usepackage{amsmath, amssymb}
+%opening
+\title{LayerOptic Documentation}
+\author{Christian Vorwerk}
+
+\begin{document}
+
+\maketitle
+
+%\begin{abstract}
+
+%\end{abstract}
+
+\section{Introduction}
+\textit{LayerOptic} is a post-processing script, which allows the user to calculate absorption and reflection coefficients of layered systems from the dielectric tensors of first-principle calculations.
+It is applicable to layered systems of optically anisotropic materials.
+Although designed for the code \texttt{exciting}, it can be used to compute these quantities starting from any dielectric tensor.\\
+This enables especially the polarization-dependent analysis of the optical response of layered material as well as the analysis on beam-angle-dependent spectra on a length scale inaccesible to first-principle calculations. Writen in python, it is easily adiustable.
+\section{Setup}
+
+We assume a system of layers stacked in the $-z$ direction. The boundary between the top layer, which is by default a semi-infinite vacuum layer and the first layer is at $z=0$. Each layer has a finite thickness $t_{n}=z_{n-1}-z_{n}$ and the layers are assumed to be asitropic in the $xy$-plane. The index $n$ runs between $1$ and $N$, where $N$ is the number of layers with finite thickness. Additionally we use $s$ to denote the semi-infinite substrate.
+We write the total dielectric tensor of the layered system as
+\begin{equation}
+ \epsilon= \begin{cases}
+ 								\epsilon(0) &  z>0 \\
+ 								\epsilon(1) & 0>z>z_1 \\
+ 								\epsilon(2) & z_1>z>z_2 \\
+ 								\vdots \\
+ 								\epsilon(N) & z_{N-1}>z>z_N \\
+ 								\epsilon(s) & z_N>z \\
+ 								
+ \end{cases}
+\end{equation}
+In order to perform calculations, a number of parameters have to be chosen. The angle $\Theta$ determines the angle of the incoming $\mathbf{k}$-vector with the z-axis, the incoming beam is always within the $zy$-plane (plane of incidence). The angle $\delta$ determines the angle of polarization of the incoming light. The incoming amplitude is always normed to one. $\delta=0$ corresponds to completely parallely polarized light, $\delta=\frac{\pi}{2}$ to completely perpencicularly polarized light.Additionally for each layer a dielectric tensor $\epsilon(n)$ and a thickness $t_{n}$ has to be provided. The programm assumes that the top layer (for $z>0$) is vacuum. All quantities are displayed in figure \ref{abb1}. 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=.7]{setup.png}
+\end{center}
+\caption[Experimental Setup]{\textit{Input parameters needed for calculation.}}
+\label{abb1}
+\end{figure}
+We also introduce a notation for the four-component vectors $\mathbf{A}$, which connects each component to a direction of motion ('downwards' denoting motion in $-z$-direction, 'upwards' in $z$-direction) and a polarization of the electric field ('parallel' denoting polarization in the  $zy$-plane, 'perpendicular' in the  $xz$-plane).
+\begin{equation}
+\mathbf{A}= \begin{cases}
+ 								A_1 &  \leftarrow \text{downwards perpendicular component} \\
+ 								A_2 & \leftarrow \text{upwards perpendicular component} \\
+ 								A_3 & \leftarrow \text{downwards parallel component} \\
+ 								A_4 & \leftarrow \text{upwards perpendicular component}
+ \end{cases}
+\end{equation}
+In each layer, there are always two up- and two downwards moving components (characterized by $\Re(k_{z,\sigma})>0$ and $\Re(k_{z,\sigma})<0$ respectively), but in ansitropic media the polarization vectors are not necessarily parallel to the polarization vectors in vacuum. This leads to a arbitrariness in the notion of 'parallel' or 'perpendicular' vectors with respect to the plane of incidence. Since in this algorithm only the electric amplitudes of the vacuum  and the substrate layer are calculated (see Sections 3 and 4), and the substrate is assumed to be isotropic, this does not affect physical results of the calculation. For a discussion of anisotropic substrate materials see...
+\section{Theoretical Background}
+The progagation of electromagnetic plane waves in an anisotropic material is determined by the Maxwell's equation in momentum space,
+\begin{equation}
+ \mathbf{k}\times\left( \mathbf{k}\times \mathbf{E}\right)+\frac{\omega^2}{c^2}\epsilon(\omega)\mathbf{E}=0
+\end{equation}
+where $\mathbf{k}$ is the wave vector of the wave with frequency $\omega$, $c$ the vacuum light velocity, $\mathbf{E}$ the electric field and $\epsilon(\omega)$ is the frequency dependent dielectric tensor.
+With fixed components $k_{x}$ and $k_{y}$, the component $k_{z}$ is determined by the condition that the determinant of eq. (1) has to vanish. Generally, this yields four roots $k_{z,\sigma}$ of the characteristic quartic polynomial for a given $\omega$, representing
+the two polarizations for each of the two directions of motion. We can then write the electric field as
+\begin{equation}
+ \mathbf{E}=\sum_{\sigma=1}^{4}A_{\sigma}\mathbf{p}_{\sigma}\exp \left[k_xx+k_yy+k_{z,\sigma}z-\omega t \right]
+\end{equation}
+with the polarizations $\mathbf{p}_{\sigma}$ and the amplitudes $A_{\sigma}$. The polarizations are obtained as the eigenvectors to the eigenvalue zero of eq. (1) for the corresponding $k_{z,\sigma}$.
+The corresponding magnetic field vector $\mathbf{H}$ is obtained as
+\begin{equation}
+\mathbf{H}=\frac{1}{\mu_0c}\mathbf{k}\times \mathbf{E}
+\end{equation} 
+Transmission and reflection coefficients are then obtained by using the boundary conditions of parallel components the electric field $E_x$ and $E_y$, and magnetic field $H_x$ and $H_y$ at the layer boundaries. At the interface $z=z_{n-1}$ this yields the matrix equation for the electric amplitudes
+\begin{equation}
+\left(\begin{array}{c}A_1(n-1)\\ A_2(n-1) \\ A_3(n-1) \\ A_4(n-1) \end{array}\right)= \mathbf{D}^{-1}(n-1)\mathbf{D}(n)\mathbf{P}(n)\left(\begin{array}{c}A_1(n)\\ A_2(n) \\ A_3(n) \\ A_4(n) \end{array}\right)
+
+\end{equation} 
+where $\mathbf{D}(n)$ and $\mathbf{P}(n)$ are $4\times 4$ matrices. The matrix $\mathbf{D}(n)$ is formed by the electric and magnetic polarization vectors $\mathbf{p}_{\sigma}(n)$ and $\mathbf{q}_{\sigma}(n)$, while the matrix $\mathbf{P}(n)$ is formed directly from the $k_{z,\sigma}$-component:
+\begin{equation}
+\mathbf{D}(n)=\left( \begin{array}{cccc} p_{x,1}(n) & p_{x,2}(n) & p_{x,3}(n) & p_{x,4}(n)\\
+										 q_{y,1}(n) & q_{y,2}(n) & q_{y,3}(n) & q_{y,4}(n)\\
+										 p_{y,1}(n) & p_{y,2}(n) & p_{y,3}(n) & p_{y,4}(n)\\
+										 q_{x,1}(n) & q_{x,2}(n) & q_{x,3}(n) & q_{x,4}(n)
+										 
+
+\end{array}\right)
+\end{equation}
+\begin{equation}
+\mathbf{P}(n)=\left( \begin{array}{cccc} \exp(ik_{z,1}(n)t_{n}) & 0 & 0 & 0\\
+										 0 & \exp(ik_{z,2}(n)t_{n}) & 0 & 0\\
+										 0 & 0 & \exp(ik_{z,3}(n)t_{n}) & 0\\
+										 0 & 0 & 0 & \exp(ik_{z,4}(n)t_{n})\\
+										 
+
+\end{array}\right)
+
+\end{equation}
+These relations between electric fields at each layer boundary can now be used to connect the amplitudes of the electric fields in the vacuum layer and the substrate:
+\begin{equation}
+\mathbf{A}(0)=\mathbf{D}^{-1}(0)\mathbf{D}(1)\mathbf{P}(1)\mathbf{D}^{-1}(2)\mathbf{P}(1)\dots\mathbf{D}^{-1}(N)\mathbf{D}(s)\mathbf{A}(s)
+\end{equation} 
+\begin{displaymath}
+ \mathbf{A}(0)=\underbrace{\mathbf{D}^{-1}(0)\mathbf{T}(1)\mathbf{T}(2)\dots \mathbf{T}(N-1)\mathbf{T}(N)\mathbf{D}(s)}_{=\mathbf{T}}\mathbf{A}(s)
+\end{displaymath}
+In the second line of equation (8), we have expressed the total transfer matrix $\mathbf{T}$ as a product of single-layer transfer matrices $\mathbf{T}(n)$
+\begin{equation}
+\mathbf{T}(n)=\mathbf{D}(n)\mathbf{P}(n)\mathbf{D}^{-1}(n)
+\end{equation}
+Using the matrix equations shown above, the amplitudes $\mathbf{A}(0)$ and $\mathbf{A}(s)$ can be calculated under the condition that four values of the amplitudes have to be fixed. 
+In order to calculate Fresnel coefficients for the light intensity, the Poynting vector in the substrate has to be calculated. For an isotropic substrate, the time-averaged Poynting vector $<\mathbf{S}>$ is obtained as
+\begin{equation}
+<\mathbf{S}_{\sigma}>=\frac{1}{2}|\mathbf{p}_{\sigma}\times \mathbf{q}_{\sigma}|=\frac{|A_{\sigma}|^{2}}{\omega\mu_0}|\mathbf{p}_{\sigma}\times(\mathbf{k}_{\sigma}\times \mathbf{p}_{\sigma})|
+\end{equation}
+This yields the transmission coefficient $T$ as
+\begin{equation}
+T=\frac{<|\mathbf{S}_{substrate}|>}{<|\mathbf{S}_{vacuum}|>}=c\mu_0 |A|^2 |\mathbf{p}\times \mathbf{q}| 
+\end{equation}
+\section{Implementation}
+\subsection{Calculation of Fresnel Coefficients}
+For each layer of the system, the roots of the characteristic polynomial of eq. (3) are calculated, yielding the wavevector components $k_{z,\sigma}(n)$. For each of these four components, the matrix in eq. (3) is constructed and the corresponding polarization vector $\mathbf{p}_{\sigma}$ is obtained as the eigenvector to the eigenvalue zero. From the electric polarization, the corresponding magnetic polarization $\mathbf{q}_{\sigma}$ is calculated.
+These quantities then allow to determine the layer transfer matrix $T(n)$ (see eq. (10)). Following a loop over all layers, the quantities $\mathbf{D}^{-1}(0)$ and $\mathbf{D}(s)$ are calculated. With these the full transfer matrix $T$ can be calculated, as shown in eq. (9). \\
+Since the components $A_1(0)$ and $A_3(0)$ are fixed as parameters and $A_2(s)=A_4(s)=0$, as no light is emitted from $z=-\infty$, the remaining components, representing the reflected light in the vacuum and the transmissed light in the substrate, are calculated from eq. (9).\\
+In a last step, the transmission coefficient is calculated from eq. (12), where the parallel component $T_{p}$ and the perpendicular component $T_{s}$ are obtained as
+\begin{equation}
+T_{p}=c\mu_0 |A_3(s)|^2 |\mathbf{p}_3(s)\times \mathbf{q}_3(s)| \;\;\;\; T_{s}=c\mu_0 |A_1(s)|^2 |\mathbf{p}_1(s)\times \mathbf{q}_1(s)|
+\end{equation}
+and the components of the reflection coefficient $R$ are obtained as
+\begin{equation}
+R_p=|A_4(0)|^{2} \;\;\;\; R_s=|A_2(0)|^{2}
+\end{equation}
+
+\subsection{Rotation of Dielectric Tensors}
+Dielectric tensors of each layer can be rotated independently before calculating the Fresnel coefficient. Rotations are implemented using Euler angles $\alpha$,$\beta$ and $\gamma$ and the $Z_1X_2Z_3$-rotation matrix. Using the standard notations
+\begin{displaymath}
+s1= \sin \alpha \;\;\;\; c1= \cos \alpha \;\;\;\; s2= \sin \beta \;\;\;\; c2= \cos \beta \;\;\;\; s3= \sin \gamma \;\;\;\; c3= \cos \gamma
+\end{displaymath}
+the rotation matrix is 
+\begin{equation}
+\mathbf{R}=Z_1X_2Z_3=\left(\begin{array}{ccc} c1c3-c2s1s3 & -c1s3-c2c3s1 & s1s2 \\
+								   c3s1+c1c2s3 & c1c2c3- s1s3 & -c1s2 \\
+								   s2s3 & c3s2 & c2
+
+\end{array}\right)
+\end{equation}
+and rotations of the dielecric tensor are performed by
+\begin{equation}
+\mathbf{\epsilon'}=\mathbf{R}\mathbf{\epsilon} \mathbf{R}^{-1}
+\end{equation}
+\section{Usage}
+
+The algorithm contains two independent python scripts, \textbf{LO-setup.py} and \textbf{LO-execute.py}.\\
+\textbf{LO-setup.py} transforms \texttt{exciting} dielectric tensor output into input files for the calculation of a layered system. The script is called with four parameters representing the three Euler angles in degrees and the layer number the dielectric tensor is used for. Note that the first three parameters are floats, while the third has to be an integer. An example usage is
+\begin{lstlisting}[language=bash]
+\$ ./LO-setup.py 40. 20. 0. 2
+\end{lstlisting}
+In this example $\alpha=40^{\circ}$, $\beta=20^{\circ}$ and $\gamma=0^{\circ}$, and the dielectric tensor is used for the second layer.\\
+The script assumes that the folder contains at least one file which contains the dielectric tensor from an \texttt{exciting} calculation. The files are assumed to have names in the form \textbf{EPSILON\textunderscore XX \textunderscore OCij.OUT}, where \textbf{XX} is a descriptor given by the \texttt{exciting} calculation and \textbf{ij} is the component of the dielectric tensor.\\
+All components of the dielectric tensor that are not saved in files in the directory, in which the script is executed, are set to zero. This allows for example a calculation with only the diagonal terms of the dielectric tensor.
+The script outputs a number of files labeled \textbf{n\textunderscore ij.out}, where $n$ is the layer number and $ij$ denotes the component of the dielectric function. These files contain the real and imaginary part of the dielectric component for each frequency point. The script uses the calculated real part of the dielectric tensor, not the one obtained from the Kramers-Kroning-relation.\\
+\textbf{LO-execute.py} executes the calculation of Fresnel coefficients for a layered system. The script is called without parameters. It displays an interactive menu, that asks you to set parameters. The script expects that for each layer, the files \textbf{n\textunderscore ij.out} files generated by \textbf{LO-setup.py} are stored in the directory the script is executed in.\\
+The output contains three files: \textbf{reflection.out}, \textbf{transmission.out} and \textbf{absorbance.out}.
+Each of this files contains the values for parallely and perpendicularly polarized light for each frequency point.
+The frequency is given in $eV$, all other quantities are dimensionless.As a example, the following shows the structure of \textbf{reflection.out}:
+\begin{equation}
+\begin{array}{ccc}
+\omega 1 [eV] & R_{perpendicular}(\omega 1) & R_{parallel}(\omega 1) \\
+\omega 2 [eV] & R_{perpendicular}(\omega 2) & R_{parallel}(\omega 2) \\
+ & \vdots &
+\end{array}
+\end{equation} 
+In all output files the first column contains the frequency, the second column the perpendicular part of the quantity of interest, the third the parallel part.
+
+\end{document}
