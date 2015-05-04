@@ -19,7 +19,7 @@ hbar=6.58211928*10.**(-16)
 
 #-------------------FUNCTIONS FOR MATRIX--------------
 #-----------------------ALGORITHM---------------------
-def quartic_solve(alpha, beta, epsilon, omega):
+def quartic_solve(alpha, beta, epsilon, omega,L):
 # Solves determinant to obtain kappa
 	
 	w=omega/c
@@ -43,15 +43,20 @@ def quartic_solve(alpha, beta, epsilon, omega):
 	
 	gamma1=np.roots(coeff)
 	gamma=np.zeros((4),'complex')
-	for i in xrange(0,4):
-		if gamma1[i]< 0.0 and gamma[0]==0.+0.j:
-			gamma[0]=gamma1[i]
-		elif gamma1[i]< 0.0 and gamma[0]!=0.+0.j:
-			gamma[2]=gamma1[i]
-		elif gamma1[i]> 0.0 and gamma[1]==0.+0.j:
-			gamma[1]=gamma1[i]
-		elif gamma1[i]> 0.0 and gamma[1]!=0.+0.j:
-			gamma[3]=gamma1[i]
+	if L==False:
+		gamma=gamma1
+	elif L==True:
+		for i in xrange(0,4):
+			if gamma1[i].real< 0.0 and gamma[0]==0.+0.j:
+				gamma[0]=gamma1[i]
+			elif gamma1[i].real< 0.0 and gamma[0]!=0.+0.j:
+				gamma[2]=gamma1[i]
+			elif gamma1[i].real> 0.0 and gamma[1]==0.+0.j:
+				gamma[1]=gamma1[i]
+			elif gamma1[i].real> 0.0 and gamma[1]!=0.+0.j:
+				gamma[3]=gamma1[i]
+	
+	
 	return gamma
 #-----------------------------------------------------------------
 def comp_eig(alpha, beta, gamma, epsilon, omega):
@@ -79,7 +84,7 @@ def det_multi(eigval):
 			m=m+1
 	return m
 #-----------------------------------------------------------------
-def comp_pol(alpha, beta, gamma, epsilon, w):
+def comp_pol(alpha, beta, gamma, epsilon, w, M):
 # computes electric and magnetic polarizations
 	P=np.zeros((3,4),'complex')
 	Q=np.zeros((3,4),'complex')
@@ -98,8 +103,8 @@ def comp_pol(alpha, beta, gamma, epsilon, w):
 			P[:,1]=[1.,0.,0.]
 			P[:,2]=[0.,1./math.sqrt(abs(beta)**2+abs(gamma[2].real)**2)*gamma[2].real,-1./math.sqrt(abs(beta)**2+abs(gamma[2].real)**2)*beta]
 			P[:,3]=[0.,1./math.sqrt(abs(beta)**2+abs(gamma[3].real)**2)*gamma[3].real,-1./math.sqrt(abs(beta)**2+abs(gamma[3].real)**2)*beta]
-			if multi[k] != 2:
-				print 'Possible Problem with Scaling of Frequency! multiplicity[',k,']=', multi[k]
+			if multi[k] != 2 and M== False :
+				print 'Possible Problem with Scaling of Frequency at w=',w,'! multiplicity[',k,']=', multi[k]
 			break
 	for l in xrange(0,4):
 		k=[alpha, beta, gamma[l]]
@@ -125,8 +130,8 @@ def const_matrix(alpha, beta, epsilon, w,t):
 	P=np.zeros((4,4),'complex')
 	D=np.zeros((4,4),'complex')
 	T=np.zeros((4,4),'complex')
-	gamma=quartic_solve(alpha,beta, epsilon,w)
-	p,q=comp_pol(alpha, beta, gamma, epsilon, w)
+	gamma=quartic_solve(alpha,beta, epsilon,w,False)
+	p,q=comp_pol(alpha, beta, gamma, epsilon, w, False)
 	for i in xrange(0,4):
 		for j in xrange(0,4):
 			if i==0:
@@ -148,10 +153,10 @@ def const_matrix2(alpha, beta, epsilon1, epsilon2, w):
 #constructs the D- and D_inv-matrix for vacuum (epsilon1) and substrat (epsilon2)
 	D1=np.zeros((4,4),'complex')
 	D2=np.zeros((4,4),'complex')
-	gamma1=quartic_solve(alpha,beta, epsilon1,w)
-	gamma2=quartic_solve(alpha,beta, epsilon2,w)
-	p1,q1=comp_pol(alpha, beta, gamma1, epsilon1, w)
-	p2,q2=comp_pol(alpha, beta, gamma2, epsilon2, w)
+	gamma1=quartic_solve(alpha,beta, epsilon1,w,True)
+	gamma2=quartic_solve(alpha,beta, epsilon2,w,True)
+	p1,q1=comp_pol(alpha, beta, gamma1, epsilon1, w, True)
+	p2,q2=comp_pol(alpha, beta, gamma2, epsilon2, w, True)
 	for i in xrange(0,4):
 		for j in xrange(0,4):
 			if i==0:
@@ -538,7 +543,7 @@ elif hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False and len(
 			g.write('%g  %1.9e %1.9e\n' % (sigma[k]*180./math.pi, T_cof[0], T_cof[1]))
 			h.write('%g  %4.9e %4.9e\n' % (sigma[k]*180./math.pi, a_cof[0], a_cof[1]))
 
-#					      2.POLARIZATION AT ONE FREQUENCY
+#					      2.SINGLE CALCULATION AT ONE FREQUENCY
 elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len(w)==1:
 	A0=[math.sin(sigma),math.cos(sigma)]
 	beta=w[0]/c*math.sin(beta0)
