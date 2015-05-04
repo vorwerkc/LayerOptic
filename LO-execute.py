@@ -103,7 +103,7 @@ def comp_pol(alpha, beta, gamma, epsilon, w, M):
 			P[:,1]=[1.,0.,0.]
 			P[:,2]=[0.,1./math.sqrt(abs(beta)**2+abs(gamma[2].real)**2)*gamma[2].real,-1./math.sqrt(abs(beta)**2+abs(gamma[2].real)**2)*beta]
 			P[:,3]=[0.,1./math.sqrt(abs(beta)**2+abs(gamma[3].real)**2)*gamma[3].real,-1./math.sqrt(abs(beta)**2+abs(gamma[3].real)**2)*beta]
-			if multi[k] != 2 and M== False :
+			if multi[k] != 1 and M== False :
 				print 'Possible Problem with Scaling of Frequency at w=',w,'! multiplicity[',k,']=', multi[k]
 			break
 	for l in xrange(0,4):
@@ -111,16 +111,6 @@ def comp_pol(alpha, beta, gamma, epsilon, w, M):
 		
 		Q1[:,l]=np.cross(k,P[:,l])
 		Q[:,l]=1./(w*mu)*Q1[:,l]
-	#print 'ELECTRIC POLARIZATION VECTORS:'
-	#print 'P1:', P[:,0]
-	#print 'P2:', P[:,1]
-	#print 'P3:', P[:,2]
-	#print 'P4:', P[:,3]
-	#print 'MAGNETIC POLARIZATION VECTORS:'
-	#print 'Q1:', Q[:,0]
-	#print 'Q2:', Q[:,1]
-	#print 'Q3:', Q[:,2]
-	#print 'Q4:', Q[:,3]
 
 	return P,Q
 
@@ -300,8 +290,9 @@ def read_vac():
 #-----------------------------------------------------------------
 		
 def read_sub(w):
-#form the vacuum dielectric tensor for each frequency point of the provided 
-#dielectric tensors
+#form the substrate dielectric tensor for each frequency point of the provided 
+#dielectric tensors. There are two options: 1) frequency indepependent dielectric 
+#function or 2) dielectric functions for metals in the Drude model
 	
 	epsilon=[]
 	inter=np.zeros((3,3),'complex')
@@ -309,6 +300,15 @@ def read_sub(w):
 		inter[i,i]=11.8336                  #set frequency-independent dielectric function
 	for i in xrange(0,len(w)):
 		epsilon.append(inter)
+	                                        #set dielectric function in Drude model
+	#w_p=8.55/hbar                          # plasmon frequency
+	#y=0.0184/hbar                          # damping parameter
+  	#for i in xrange(0,len(w)):
+		#inter=np.zeros((3,3),'complex')
+		#for j in xrange(0,3):
+			#inter[j,j]=1.-w_p**2*(1/(w[i]*(w[i]+1.j*y)))
+		#epsilon.append(inter)
+
 	return epsilon
 					
 #-----------------------------------------------------------------
@@ -493,7 +493,7 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len
 			h.write('%g  %4.9e %4.9e\n' % (w[i]*b*hbar, a_cof[0], a_cof[1]))
 #****************************************************************************************
 #                         HARD CODED SPECIAL CASES
-#                         1.ANGULAR DEPENDENCE AT ONE FREQUENCY
+#                      1.ANGULAR DEPENDENCE AT ONE FREQUENCY
 elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==True and len(w)==1:
 	A0=[math.sin(sigma),math.cos(sigma)]
 	with open('reflection.out','w') as f, open('transmission.out','w') as g, open('absorbance.out','w') as h:
