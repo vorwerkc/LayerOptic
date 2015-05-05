@@ -103,7 +103,7 @@ def comp_pol(alpha, beta, gamma, epsilon, w, M):
 			P[:,1]=[1.,0.,0.]
 			P[:,2]=[0.,1./math.sqrt(abs(beta)**2+abs(gamma[2].real)**2)*gamma[2].real,-1./math.sqrt(abs(beta)**2+abs(gamma[2].real)**2)*beta]
 			P[:,3]=[0.,1./math.sqrt(abs(beta)**2+abs(gamma[3].real)**2)*gamma[3].real,-1./math.sqrt(abs(beta)**2+abs(gamma[3].real)**2)*beta]
-			if multi[k] != 1 and M== False :
+			if multi[k] != 2 and M== False :
 				print 'Possible Problem with Scaling of Frequency at w=',w,'! multiplicity[',k,']=', multi[k]
 			break
 	for l in xrange(0,4):
@@ -461,11 +461,8 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==True and len(
 #                         1.NEITHER ANGULAR NOR POLARIZATION DEPENDENCY
 elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len(w)!=1:
 	with open('reflection.out','w') as f, open('transmission.out','w') as g, open('absorbance.out','w') as h:
-		A0=[math.sin(sigma),math.cos(sigma)]
-		#A0=[0.,1.]
-		print 'A0=',A0
+		A0=[math.sin(sigma),math.cos(sigma)]		
 		for i in xrange(0,len(w)):
-			print 'Frequency Point ', i
 			beta=w[i]/c*math.sin(beta0)
 			R_cof=[]
 			T_cof=[]
@@ -473,9 +470,7 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len
 			T=[]
 			T_ges=[]
 			for j in xrange(1,(len(EPS))-1):  #loop over layers
-				print 'Layer Number ', j
 				T.append(const_matrix(alpha, beta, EPS[j][i], w[i],t[j-1]))
-			print 'Substrate and Vacuum'
 			D_inv,D,p,q=const_matrix2(alpha, beta, EPS[0][i], EPS[-1][i], w[i])
 
 			T_ges=T_mult(T,D_inv,D)
