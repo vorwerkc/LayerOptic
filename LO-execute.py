@@ -384,10 +384,7 @@ def io():
 		t.append(float(input('>>>>Thickness:'))*b)
 		print '*******************************************'
 	return alpha, beta, t, N
-#-----------------------------------------------------------------
-def log(beta0,sigma,N,t):
-	with open('log.out','w')
-	
+
 #-------------------------MAIN--PROGRAM----------------------------
 		
 
