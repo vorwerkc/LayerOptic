@@ -19,7 +19,7 @@ hbar=6.58211928*10.**(-16)
 
 #-------------------FUNCTIONS FOR MATRIX--------------
 #-----------------------ALGORITHM---------------------
-def quartic_solve(alpha, beta, epsilon, omega,L):
+def quartic_solve(alpha, beta, epsilon, omega):
 # Solves determinant to obtain kappa
 	
 	w=omega/c
@@ -43,9 +43,11 @@ def quartic_solve(alpha, beta, epsilon, omega,L):
 	
 	gamma1=np.roots(coeff)
 	gamma=np.zeros((4),'complex')
-	if L==False:
+	intu=intuition(gamma1)
+	if intu==False:
 		gamma=gamma1
-	elif L==True:
+		
+	elif intu==True:
 		for i in xrange(0,4):
 			if gamma1[i].real< 0.0 and gamma[0]==0.+0.j:
 				gamma[0]=gamma1[i]
@@ -201,8 +203,8 @@ def amplitude(A0,T_ges,p,q):
 	H2=As_out[1]*q[:,2]
 	S1=np.cross(E1,H1)
 	S2=np.cross(E2,H2)
-	T1=c*mu*(abs(S1[0])+abs(S1[1])+abs(S1[2]))
-	T2=c*mu*(abs(S2[0])+abs(S2[1])+abs(S2[2]))
+	T1=c*mu*math.sqrt(abs(S1[0])**2+abs(S1[1])**2+abs(S1[2])**2)
+	T2=c*mu*math.sqrt(abs(S2[0])**2+abs(S2[1])**2+abs(S2[2])**2)
 	R1=abs(A0_out[0])**2
 	R2=abs(A0_out[1])**2
 	if abs(As_out[0])**2 != 0.0:
@@ -230,6 +232,24 @@ def scale(w,t):
 			break
 	return w,t,a
 
+#-----------------------------------------------------------------
+def intuition(gamma):
+# Performs a sanity check on gamma
+	m=0
+	n=0
+	for i in xrange(0,len(gamma)):
+		if gamma[i].real>0.:
+			m=m+1
+		elif gamma[i].real<0. :
+			n=n+1
+	if n==2 and m==2:
+		intuition=True
+	elif n+m != 4:
+		print 'Something REALLY wrong with gamma!'
+		intuition=False
+	else:
+		intuition=False
+	return intuition
 
 #-------------------FUNCTIONS TO READ-----------------
 #-------------------------INPUT-----------------------
