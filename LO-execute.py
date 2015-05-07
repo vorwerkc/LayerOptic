@@ -122,7 +122,7 @@ def const_matrix(alpha, beta, epsilon, w,t):
 	P=np.zeros((4,4),'complex')
 	D=np.zeros((4,4),'complex')
 	T=np.zeros((4,4),'complex')
-	gamma=quartic_solve(alpha,beta, epsilon,w,False)
+	gamma=quartic_solve(alpha,beta, epsilon,w)
 	p,q=comp_pol(alpha, beta, gamma, epsilon, w, False)
 	for i in xrange(0,4):
 		for j in xrange(0,4):
@@ -145,8 +145,8 @@ def const_matrix2(alpha, beta, epsilon1, epsilon2, w):
 #constructs the D- and D_inv-matrix for vacuum (epsilon1) and substrat (epsilon2)
 	D1=np.zeros((4,4),'complex')
 	D2=np.zeros((4,4),'complex')
-	gamma1=quartic_solve(alpha,beta, epsilon1,w,True)
-	gamma2=quartic_solve(alpha,beta, epsilon2,w,True)
+	gamma1=quartic_solve(alpha,beta, epsilon1,w)
+	gamma2=quartic_solve(alpha,beta, epsilon2,w)
 	p1,q1=comp_pol(alpha, beta, gamma1, epsilon1, w, True)
 	p2,q2=comp_pol(alpha, beta, gamma2, epsilon2, w, True)
 	for i in xrange(0,4):
