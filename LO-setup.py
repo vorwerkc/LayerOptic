@@ -22,7 +22,7 @@ beta=float(sys.argv[2])*math.pi/180.
 gamma=float(sys.argv[3])*math.pi/180.
 
 L=sys.argv[4] # Layer number
-print 'L=', sys.argv[4]
+
 #Sine and Cosine of Angles
 c1=math.cos(alpha)
 c2=math.cos(beta)
@@ -60,7 +60,7 @@ for i in xrange(0,len(files)):
 # read all frequency lists and elements of the tensors into dictionary
 scheme=''
 for j in xrange(0,len(inlist[0].split('_'))-1):
-	print j
+	
 	scheme=scheme+inlist[0].split('_')[j]+'_'
 scheme=scheme+'OC'
 #scheme=inlist[0].split('_')[0]+'_'+inlist[0].split('_')[1]+'_'+inlist[0].split('_')[2]+'_OC'
