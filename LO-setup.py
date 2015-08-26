@@ -10,18 +10,55 @@ import numpy as np
 from math import sin, cos, pi
 
 
-if len(sys.argv) !=5:
+if len(sys.argv)>1 and  len(sys.argv) !=5:
 	print '\n Please provide FOUR input parameters:'\
 		  '\n 3 Euler Angles in Degree'\
 		  '\n Layer Number'
 	sys.exit()
 		  
 # Euler Angles
-alpha=float(sys.argv[1])*math.pi/180.
-beta=float(sys.argv[2])*math.pi/180.
-gamma=float(sys.argv[3])*math.pi/180.
+if len(sys.argv)>1:
+	alpha=float(sys.argv[1])*math.pi/180.
+	beta=float(sys.argv[2])*math.pi/180.
+	gamma=float(sys.argv[3])*math.pi/180.
+	L=sys.argv[4] # Layer number
+else:
+	print '\n       _________________________________________________________________ '\
+	      '\n      |                                                                 |'\
+	      '\n      |                 WELCOME TO LAYEROPTICS (SETUP)                  |'\
+	      '\n      |                                                                 |'\
+	      '\n      |                 written by Christian Vorwerk                    |'\
+	      '\n      |_________________________________________________________________|'\
+	
+	print '\n                        Please provide the layer index:                  '
+	L=raw_input('>>>>>>>>     ')
+	print '\n             Please provide the Euler angle ALPHA in Degree:             '
+	alpha=raw_input('>>>>>>>>     ')
+	alpha=float(alpha)*math.pi/180.
+	print '\n             Please provide the Euler angle BETA in Degree:             '
+	beta=raw_input('>>>>>>>>     ')
+	beta=float(beta)*math.pi/180.
+	print '\n             Please provide the Euler angle GAMMA in Degree:             '
+	gamma=raw_input('>>>>>>>>     ')
+	gamma=float(alpha)*math.pi/180.
 
-L=sys.argv[4] # Layer number
+	if alpha=='RANGE':
+		print '\n          Please type the two values between which the angle '\
+			  '\n             should be varied and the number of steps.        '                          
+		alpha=raw_input('>>>>>>>>     ')
+		if len(alpha.split(" ")) > 3 or len(alpha.split(" ")) < 3 :
+			sys.exit('     Please provide two real  numbers and one integer!')
+		alpha0=float(alpha.split(" ")[0])*math.pi/180.
+		alpha1=float(alpha.split(" ")[1])*math.pi/180.
+		N=int(alpha.split(" ")[2])
+		alpha=[]
+		for i in xrange(0,N):
+			alpha.append(alpha0+i*(alpha1-alpha0)/(N-1))
+		print '\n           Choose the polarization angle.'\
+			  '\n      For an array of beam angles the polarization'\
+			  '\n                    has to be fixed'
+		beta=raw_input('>>>>>>>>     ')
+		beta=float(beta)*math.pi/180.
 
 #Sine and Cosine of Angles
 c1=math.cos(alpha)
