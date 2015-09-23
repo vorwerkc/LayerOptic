@@ -342,9 +342,9 @@ def io():
 	      '\n      |                 written by Christian Vorwerk                    |'\
 	      '\n      |_________________________________________________________________|'\
 	
-	print '\n          There are two options for the ANGLE of the INCOMING BEAM:      '\
-          '\n             1. Type a fixed angle in degree                           '\
-          '\n             2. Set a range of numbers by typing "RANGE"                 '
+	print '\n             Set the ANGLE of the INCOMING BEAM                       '\
+          '\n                               or                           '\
+          '\n             Type "RANGE" to consider a range of angles                           '\
 
 	alpha=raw_input('>>>>>>>>     ')
 
@@ -367,9 +367,9 @@ def io():
 		beta=float(beta)*math.pi/180.
 	else:
 		alpha=float(alpha)*math.pi/180.
-		print '\n          There are two options for the POLARIZATION ANGLE:'\
-			  '\n             1. Type a fixed angle                           '\
-		      '\n             2. Set a range of numbers by typing "RANGE"       '
+	print '\n             Set the POLARIZATION ANGLE                       '\
+          '\n                               or                           '\
+          '\n             Type "RANGE" to consider a range of angles                           '\
 		beta=raw_input('>>>>>>>>     ')
 		if beta=='RANGE':
 			print '\n          Please type the two values between which the angle '\
@@ -385,24 +385,15 @@ def io():
 				beta.append(beta0+i*(beta1-beta0)/(N-1))
 		else:
 			beta=float(beta)*math.pi/180.
-	print '             Provide the number of layers, not counting vacuum and substrat'
+	print '             Provide the number of layers, not counting vacuum and substrate'
 	N=input('>>>>>>>>     ')
 	t=[]
-	print '\n          Please provide in the following the thickness of each layer.'\
-		  '\n         Your also asked to provide the unit of length for each layer.'\
-		  '\n                          Choose between: m, mm, nm'
+	print '\n          For each layer. specify the thickness (nm):'
 	for i in xrange(0,N):
 		print '*******************************************'
-		print 'For Layer ', i+1
-		a=raw_input('>>>>Unit:')
-		if a =='m':
-			b=1.
-		elif a=='mm':
-			b=10.**(-3)
-		elif a=='nm':
-			b=10.**(-9) 
-		t.append(float(input('>>>>Thickness:'))*b)
-		print '*******************************************'
+		print 'For Layer ', i+1 
+		t.append(float(input('>>>>>>>>     '))*(10.**(-9)))
+	print '*******************************************'
 	return alpha, beta, t, N
 
 #-------------------------MAIN--PROGRAM----------------------------

@@ -32,13 +32,13 @@ else:
 	
 	print '\n                        Please provide the layer index:                  '
 	L=raw_input('>>>>>>>>     ')
-	print '\n             Please provide the Euler angle ALPHA in Degree:             '
+	print '\n             Please provide the Euler angle ALPHA (deg):             '
 	alpha=raw_input('>>>>>>>>     ')
 	alpha=float(alpha)*math.pi/180.
-	print '\n             Please provide the Euler angle BETA in Degree:             '
+	print '\n             Please provide the Euler angle BETA (deg):             '
 	beta=raw_input('>>>>>>>>     ')
 	beta=float(beta)*math.pi/180.
-	print '\n             Please provide the Euler angle GAMMA in Degree:             '
+	print '\n             Please provide the Euler angle GAMMA (deg):             '
 	gamma=raw_input('>>>>>>>>     ')
 	gamma=float(alpha)*math.pi/180.
 
