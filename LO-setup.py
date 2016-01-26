@@ -1,4 +1,14 @@
-#! /usr/bin/python
+#! /usr/bin/env python
+#
+#
+# AUTHOR: Christian Vorwerk 2015
+# 		  vorwerk(at)physik.hu-berlin.de
+# 
+# 
+# EXPLANATION:
+#  applies Euler rotation to the dielectric tensor of a given layer
+# 	
+#__________________________________________________________________________________________________
 import os
 import sys
 import string

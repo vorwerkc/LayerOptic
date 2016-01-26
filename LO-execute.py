@@ -1,7 +1,15 @@
-#! /usr/bin/python
-# test version 1.3.1
+#! /usr/bin/env python
+#
+#
+# AUTHOR: Christian Vorwerk 2015
+# 		  vorwerk(at)physik.hu-berlin.de
+# 
+# 
+# EXPLANATION:
 # calculates transmission and reflection coefficients for electric fields
-# following Puschning & Ambrosch-Draxl(2006), Yeh (1980)
+# following Puschning & Ambrosch-Draxl(2006), Yeh (1980) 
+#__________________________________________________________________________________________________
+
 import sys
 import os
 import math
