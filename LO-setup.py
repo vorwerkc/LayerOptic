@@ -144,7 +144,8 @@ for i in xrange(0,3):
 	for j in xrange(0,3):
 		with open(str(L)+'_'+str(i+1)+str(j+1)+'.OUT','w') as f:
 			for k in xrange(0,len(epsilon)):
-				f.write('%g  %1.9e %1.9e\n' % (w[k], epsilon[k][i,j].real, epsilon[k][i,j].imag))
+				if w[k] != 0.0:
+					f.write('%g  %1.9e %1.9e\n' % (w[k], epsilon[k][i,j].real, epsilon[k][i,j].imag))
 
 			
 	

@@ -342,15 +342,15 @@ def io():
 	      '\n      |                 written by Christian Vorwerk                    |'\
 	      '\n      |_________________________________________________________________|'\
 	
-	print '\n             Set the ANGLE of the INCOMING BEAM                       '\
-          '\n                               or                           '\
-          '\n             Type "RANGE" to consider a range of angles                           '\
+	print '\n                    Set the ANGLE of the INCOMING BEAM                   '\
+          '\n                                    or                                   '\
+          '\n                Type "RANGE" to consider a range of angles               '\
 
 	alpha=raw_input('>>>>>>>>     ')
 
 	if alpha=='RANGE':
-		print '\n          Please type the two values between which the angle '\
-			  '\n             should be varied and the number of steps.        '                          
+		print '\n          Please type the two values between which the angle         '\
+			  '\n             should be varied and the number of steps.               '                          
 		alpha=raw_input('>>>>>>>>     ')
 		if len(alpha.split(" ")) > 3 or len(alpha.split(" ")) < 3 :
 			sys.exit('     Please provide two real  numbers and one integer!')
@@ -360,20 +360,20 @@ def io():
 		alpha=[]
 		for i in xrange(0,N):
 			alpha.append(alpha0+i*(alpha1-alpha0)/(N-1))
-		print '\n           Choose the polarization angle.'\
-			  '\n      For an array of beam angles the polarization'\
-			  '\n                    has to be fixed'
+		print '\n           Choose the polarization angle.                            '\
+			  '\n      For an array of beam angles the polarization                   '\
+			  '\n                    has to be fixed                                  '
 		beta=raw_input('>>>>>>>>     ')
 		beta=float(beta)*math.pi/180.
 	else:
 		alpha=float(alpha)*math.pi/180.
-	print '\n             Set the POLARIZATION ANGLE                       '\
-          '\n                               or                           '\
-          '\n             Type "RANGE" to consider a range of angles                           '\
+		print '\n                    Set the POLARIZATION ANGLE                       '\
+			  '\n                               or                                    '\
+              '\n             Type "RANGE" to consider a range of angles              '
 		beta=raw_input('>>>>>>>>     ')
 		if beta=='RANGE':
-			print '\n          Please type the two values between which the angle '\
-				  '\n             should be varied and the number of steps.                                   '
+			print '\n          Please type the two values between which the angle     '\
+				  '\n             should be varied and the number of steps.           '
 			beta=raw_input('>>>>>>>>     ')
 			if len(beta.split(" ")) > 3 or len(beta.split(" ")) < 3 :
 				sys.exit('     Please provide two real  numbers and one integer!')
