@@ -429,7 +429,7 @@ if hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False:
 	for k in xrange(0,len(sigma)):
 		A0=[math.sin(sigma[k]),math.cos(sigma[k])]
 		for l in xrange(0, len(sigma)):
-			print 'A0(', sigma[l],')=', [math.sin(sigma[l]),math.cos(sigma[l])]
+			#print 'A0(', sigma[l],')=', [math.sin(sigma[l]),math.cos(sigma[l])]
 		with open('reflection'+str(k)+'.out','w') as f, open('transmission'+str(k)+'.out','w') as g, open('absorbance'+str(k)+'.out','w') as h:
 			for i in xrange(0,len(w)):
 				beta=w[i]/c*math.sin(beta0)
