@@ -29,7 +29,6 @@ hbar=6.58211928*10.**(-16)
 #-----------------------ALGORITHM---------------------
 def quartic_solve(alpha, beta, epsilon, omega):
 # Solves determinant to obtain kappa
-	
 	w=omega/c
 	A=w**2*epsilon[0,0]-beta**2
 	B=w**2*epsilon[0,1]+alpha*beta
@@ -41,7 +40,6 @@ def quartic_solve(alpha, beta, epsilon, omega):
 	H=w**2*epsilon[2,1]
 	I=w**2*epsilon[2,2]-alpha**2-beta**2
 	
-
 	coeff=[]
 	coeff.append(I+alpha**2+beta**2)
 	coeff.append(alpha*G+alpha*C+beta*H+beta*F)
@@ -101,7 +99,6 @@ def comp_pol(alpha, beta, gamma, epsilon, w, M):
 	Q1=np.zeros((3,4),'complex')
 	multi=np.zeros((4),'int')
 	for k in xrange(0,4):
-
 		eigval,eigvector=comp_eig(alpha, beta, gamma[k], epsilon, w)
 		multi[k]=det_multi(eigval)
 		if multi[k] ==1:
@@ -191,6 +188,14 @@ def T_mult(T,D_inv,D):
 def amplitude(A0,T_ges,p,q):
 #calculates the Poynting vector in the last layer and obtains R,T
 #and the absorbance a=-log(T)
+# Output Structure:
+# R1= perpendicular component of R
+# R2= parallel ---"--"-- of R
+# T1= perpendicular ---"--"-- of T
+# T2= parallel ---"--"-- of T
+# a1= perpendicular ---"--"-- of a
+# a2= parallel ---"--"-- of a
+
 	A0_out=np.zeros((2,1),'complex')
 	As_out=np.zeros((2,1),'complex')
 	T1=np.array([[T_ges[0,0], T_ges[0,2]],[T_ges[2,0], T_ges[2,2]]])
@@ -231,8 +236,8 @@ def scale(w,t):
 # Scales angular frequency and thicknesses in order to secure accurancy for
 # different frequencies and angles
 	for i in xrange(0,len(w)):
-		if w[i] != 0:
-			a=w[0]*10.**(-8) 
+		if w[i] != 0.:
+			a=w[i]*10.**(-8) 
 			for j in xrange(0,len(w)):
 				w[j]=w[j]/a
 			for k in xrange(0,len(t)):
@@ -428,7 +433,7 @@ w,t,b=scale(w,t)
 if hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False:
 	for k in xrange(0,len(sigma)):
 		A0=[math.sin(sigma[k]),math.cos(sigma[k])]
-		for l in xrange(0, len(sigma)):
+		#for l in xrange(0, len(sigma)):
 			#print 'A0(', sigma[l],')=', [math.sin(sigma[l]),math.cos(sigma[l])]
 		with open('reflection'+str(k)+'.out','w') as f, open('transmission'+str(k)+'.out','w') as g, open('absorbance'+str(k)+'.out','w') as h:
 			for i in xrange(0,len(w)):
@@ -442,12 +447,12 @@ if hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False:
 					T.append(const_matrix(alpha, beta, EPS[j][i], w[i],t[j-1]))
 				D_inv,D,p,q=const_matrix2(alpha, beta, EPS[0][i], EPS[-1][i], w[i])
 				T_ges=T_mult(T,D_inv,D)
-				R_cof.append(amplitude(A0,T_ges,p,q)[0])
 				R_cof.append(amplitude(A0,T_ges,p,q)[1])
-				T_cof.append(amplitude(A0,T_ges,p,q)[2])
+				R_cof.append(amplitude(A0,T_ges,p,q)[0])
 				T_cof.append(amplitude(A0,T_ges,p,q)[3])
-				a_cof.append(amplitude(A0,T_ges,p,q)[4])
+				T_cof.append(amplitude(A0,T_ges,p,q)[2])
 				a_cof.append(amplitude(A0,T_ges,p,q)[5])
+				a_cof.append(amplitude(A0,T_ges,p,q)[4])
 				f.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, R_cof[0], R_cof[1], R_cof[0]+R_cof[1]))
 				g.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, T_cof[0], T_cof[1], T_cof[0]+T_cof[1]))
 				h.write('%g  %4.9e %4.9e %4.9e\n' % (w[i]*b*hbar, a_cof[0], a_cof[1],-math.log(T_cof[0]+T_cof[1])))
@@ -468,12 +473,12 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==True and len(
 					T.append(const_matrix(alpha, beta, EPS[j][i], w[i],t[j-1]))
 				D_inv,D,p,q=const_matrix2(alpha, beta, EPS[0][i], EPS[-1][i], w[i])
 				T_ges=T_mult(T,D_inv,D)
-				R_cof.append(amplitude(A0,T_ges,p,q)[0])
 				R_cof.append(amplitude(A0,T_ges,p,q)[1])
-				T_cof.append(amplitude(A0,T_ges,p,q)[2])
+				R_cof.append(amplitude(A0,T_ges,p,q)[0])
 				T_cof.append(amplitude(A0,T_ges,p,q)[3])
-				a_cof.append(amplitude(A0,T_ges,p,q)[4])
+				T_cof.append(amplitude(A0,T_ges,p,q)[2])
 				a_cof.append(amplitude(A0,T_ges,p,q)[5])
+				a_cof.append(amplitude(A0,T_ges,p,q)[4])
 				f.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, R_cof[0], R_cof[1], R_cof[0]+R_cof[1]))
 				g.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, T_cof[0], T_cof[1], T_cof[0]+T_cof[1]))
 				h.write('%g  %4.9e %4.9e %4.9e\n' % (w[i]*b*hbar, a_cof[0], a_cof[1],-math.log(T_cof[0]+T_cof[1])))
@@ -493,12 +498,12 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len
 			D_inv,D,p,q=const_matrix2(alpha, beta, EPS[0][i], EPS[-1][i], w[i])
 
 			T_ges=T_mult(T,D_inv,D)
-			R_cof.append(amplitude(A0,T_ges,p,q)[0])
 			R_cof.append(amplitude(A0,T_ges,p,q)[1])
-			T_cof.append(amplitude(A0,T_ges,p,q)[2])
+			R_cof.append(amplitude(A0,T_ges,p,q)[0])
 			T_cof.append(amplitude(A0,T_ges,p,q)[3])
-			a_cof.append(amplitude(A0,T_ges,p,q)[4])
+			T_cof.append(amplitude(A0,T_ges,p,q)[2])
 			a_cof.append(amplitude(A0,T_ges,p,q)[5])
+			a_cof.append(amplitude(A0,T_ges,p,q)[4])
 			f.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, R_cof[0], R_cof[1], R_cof[0]+R_cof[1]))
 			g.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, T_cof[0], T_cof[1], T_cof[0]+T_cof[1]))
 			h.write('%g  %4.9e %4.9e %4.9e\n' % (w[i]*b*hbar, a_cof[0], a_cof[1],-math.log(T_cof[0]+T_cof[1])))
@@ -519,12 +524,12 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==True and len(
 				T.append(const_matrix(alpha, beta, EPS[j][0], w[0],t[j-1]))
 			D_inv,D,p,q=const_matrix2(alpha, beta, EPS[0][0], EPS[-1][0], w[0])
 			T_ges=T_mult(T,D_inv,D)
-			R_cof.append(amplitude(A0,T_ges,p,q)[0])
 			R_cof.append(amplitude(A0,T_ges,p,q)[1])
-			T_cof.append(amplitude(A0,T_ges,p,q)[2])
+			R_cof.append(amplitude(A0,T_ges,p,q)[0])
 			T_cof.append(amplitude(A0,T_ges,p,q)[3])
-			a_cof.append(amplitude(A0,T_ges,p,q)[4])
+			T_cof.append(amplitude(A0,T_ges,p,q)[2])
 			a_cof.append(amplitude(A0,T_ges,p,q)[5])
+			a_cof.append(amplitude(A0,T_ges,p,q)[4])
 			f.write('%g  %1.9e %1.9e\n' % (beta0[k]*180./math.pi, R_cof[0], R_cof[1]))
 			g.write('%g  %1.9e %1.9e\n' % (beta0[k]*180./math.pi, T_cof[0], T_cof[1]))
 			h.write('%g  %4.9e %4.9e\n' % (beta0[k]*180./math.pi, a_cof[0], a_cof[1]))
@@ -544,12 +549,12 @@ elif hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False and len(
 				T.append(const_matrix(alpha, beta, EPS[j][0], w[0],t[j-1]))
 			D_inv,D,p,q=const_matrix2(alpha, beta, EPS[0][0], EPS[-1][0], w[0])
 			T_ges=T_mult(T,D_inv,D)
-			R_cof.append(amplitude(A0,T_ges,p,q)[0])
 			R_cof.append(amplitude(A0,T_ges,p,q)[1])
-			T_cof.append(amplitude(A0,T_ges,p,q)[2])
+			R_cof.append(amplitude(A0,T_ges,p,q)[0])
 			T_cof.append(amplitude(A0,T_ges,p,q)[3])
-			a_cof.append(amplitude(A0,T_ges,p,q)[4])
+			T_cof.append(amplitude(A0,T_ges,p,q)[2])
 			a_cof.append(amplitude(A0,T_ges,p,q)[5])
+			a_cof.append(amplitude(A0,T_ges,p,q)[4])
 			f.write('%g  %1.9e %1.9e\n' % (sigma[k]*180./math.pi, R_cof[0], R_cof[1]))
 			g.write('%g  %1.9e %1.9e\n' % (sigma[k]*180./math.pi, T_cof[0], T_cof[1]))
 			h.write('%g  %4.9e %4.9e\n' % (sigma[k]*180./math.pi, a_cof[0], a_cof[1]))
@@ -567,12 +572,12 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len
 		T.append(const_matrix(alpha, beta, EPS[j][0], w[0],t[j-1]))
 	D_inv,D,p,q=const_matrix2(alpha, beta, EPS[0][0], EPS[-1][0], w[0])
 	T_ges=T_mult(T,D_inv,D)
-	R_cof.append(amplitude(A0,T_ges,p,q)[0])
 	R_cof.append(amplitude(A0,T_ges,p,q)[1])
-	T_cof.append(amplitude(A0,T_ges,p,q)[2])
+	R_cof.append(amplitude(A0,T_ges,p,q)[0])
 	T_cof.append(amplitude(A0,T_ges,p,q)[3])
-	a_cof.append(amplitude(A0,T_ges,p,q)[4])
+	T_cof.append(amplitude(A0,T_ges,p,q)[2])
 	a_cof.append(amplitude(A0,T_ges,p,q)[5])
+	a_cof.append(amplitude(A0,T_ges,p,q)[4])
 	print 'Reflection Coefficients:', R_cof[0], R_cof[1]
 	print 'Transmission Coefficients:', T_cof[0], T_cof[1]
 	
