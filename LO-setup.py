@@ -50,7 +50,7 @@ else:
 	beta=float(beta)*math.pi/180.
 	print '\n             Please provide the Euler angle GAMMA (deg):             '
 	gamma=raw_input('>>>>>>>>     ')
-	gamma=float(alpha)*math.pi/180.
+	gamma=float(gamma)*math.pi/180.
 
 	if alpha=='RANGE':
 		print '\n          Please type the two values between which the angle '\
