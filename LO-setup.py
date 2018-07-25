@@ -127,8 +127,9 @@ for i in xrange(0,3):
 				line=EPS.readline()
 				line=line.strip()
 				if len(line)==0: break
-				data['w'+str(i)+str(j)].append(float(line.split()[0]))
-				data[str(i)+str(j)].append(float(line.split()[1])+float(line.split()[2])*1j)
+                                if (line[0] != '#'):
+				    data['w'+str(i)+str(j)].append(float(line.split()[0]))
+				    data[str(i)+str(j)].append(float(line.split()[1])+float(line.split()[2])*1j)
 		
 # form list of dielectric tensors for each frequency from directory
 epsilon=[]
