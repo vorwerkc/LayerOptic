@@ -453,9 +453,9 @@ if hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False:
 				T_cof.append(amplitude(A0,T_ges,p,q)[2])
 				a_cof.append(amplitude(A0,T_ges,p,q)[5])
 				a_cof.append(amplitude(A0,T_ges,p,q)[4])
-				f.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, R_cof[0], R_cof[1], R_cof[0]+R_cof[1]))
-				g.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, T_cof[0], T_cof[1], T_cof[0]+T_cof[1]))
-				h.write('%g  %4.9e %4.9e %4.9e\n' % (w[i]*b*hbar, a_cof[0], a_cof[1],-math.log(T_cof[0]+T_cof[1])))
+				f.write('%10.20e  %1.20e %1.20e %1.20e\n' % (w[i]*b*hbar, R_cof[0], R_cof[1], R_cof[0]+R_cof[1]))
+				g.write('%10.20e  %1.20e %1.20e %1.20e\n' % (w[i]*b*hbar, T_cof[0], T_cof[1], T_cof[0]+T_cof[1]))
+				h.write('%10.20e  %4.20e %4.20e %4.20e\n' % (w[i]*b*hbar, a_cof[0], a_cof[1],-math.log(T_cof[0]+T_cof[1])))
 
 #                         1.ANGULAR DEPENDENCY
 elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==True and len(w)!=1:
@@ -479,9 +479,9 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==True and len(
 				T_cof.append(amplitude(A0,T_ges,p,q)[2])
 				a_cof.append(amplitude(A0,T_ges,p,q)[5])
 				a_cof.append(amplitude(A0,T_ges,p,q)[4])
-				f.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, R_cof[0], R_cof[1], R_cof[0]+R_cof[1]))
-				g.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, T_cof[0], T_cof[1], T_cof[0]+T_cof[1]))
-				h.write('%g  %4.9e %4.9e %4.9e\n' % (w[i]*b*hbar, a_cof[0], a_cof[1],-math.log(T_cof[0]+T_cof[1])))
+				f.write('%10.20e  %1.20e %1.20e %1.20e\n' % (w[i]*b*hbar, R_cof[0], R_cof[1], R_cof[0]+R_cof[1]))
+				g.write('%10.20e  %1.20e %1.20e %1.20e\n' % (w[i]*b*hbar, T_cof[0], T_cof[1], T_cof[0]+T_cof[1]))
+				h.write('%10.20e  %4.20e %4.20e %4.20e\n' % (w[i]*b*hbar, a_cof[0], a_cof[1],-math.log(T_cof[0]+T_cof[1])))
 #                         1.NEITHER ANGULAR NOR POLARIZATION DEPENDENCY
 elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len(w)!=1:
 	with open('reflection.out','w') as f, open('transmission.out','w') as g, open('absorbance.out','w') as h:
@@ -504,9 +504,9 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len
 			T_cof.append(amplitude(A0,T_ges,p,q)[2])
 			a_cof.append(amplitude(A0,T_ges,p,q)[5])
 			a_cof.append(amplitude(A0,T_ges,p,q)[4])
-			f.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, R_cof[0], R_cof[1], R_cof[0]+R_cof[1]))
-			g.write('%g  %1.9e %1.9e %1.9e\n' % (w[i]*b*hbar, T_cof[0], T_cof[1], T_cof[0]+T_cof[1]))
-			h.write('%g  %4.9e %4.9e %4.9e\n' % (w[i]*b*hbar, a_cof[0], a_cof[1],-math.log(T_cof[0]+T_cof[1])))
+			f.write('%10.20e  %1.20e %1.20e %1.20e\n' % (w[i]*b*hbar, R_cof[0], R_cof[1], R_cof[0]+R_cof[1]))
+			g.write('%10.20e  %1.20e %1.20e %1.20e\n' % (w[i]*b*hbar, T_cof[0], T_cof[1], T_cof[0]+T_cof[1]))
+			h.write('%10.20e  %10.20e %10.20e %10.20e\n' % (w[i]*b*hbar, a_cof[0], a_cof[1],-math.log(T_cof[0]+T_cof[1])))
 #****************************************************************************************
 #                         HARD CODED SPECIAL CASES
 #                      1.ANGULAR DEPENDENCE AT ONE FREQUENCY
@@ -530,9 +530,9 @@ elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==True and len(
 			T_cof.append(amplitude(A0,T_ges,p,q)[2])
 			a_cof.append(amplitude(A0,T_ges,p,q)[5])
 			a_cof.append(amplitude(A0,T_ges,p,q)[4])
-			f.write('%g  %1.9e %1.9e\n' % (beta0[k]*180./math.pi, R_cof[0], R_cof[1]))
-			g.write('%g  %1.9e %1.9e\n' % (beta0[k]*180./math.pi, T_cof[0], T_cof[1]))
-			h.write('%g  %4.9e %4.9e\n' % (beta0[k]*180./math.pi, a_cof[0], a_cof[1]))
+			f.write('%10.20e  %1.20e %1.20e\n' % (beta0[k]*180./math.pi, R_cof[0], R_cof[1]))
+			g.write('%10.20e  %1.20e %1.20e\n' % (beta0[k]*180./math.pi, T_cof[0], T_cof[1]))
+			h.write('%10.20e  %4.20e %4.20e\n' % (beta0[k]*180./math.pi, a_cof[0], a_cof[1]))
 			
 #					      2.POLARIZATION AT ONE FREQUENCY
 elif hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False and len(w)==1:
@@ -555,9 +555,9 @@ elif hasattr(sigma,'__len__')==True and hasattr(beta0,'__len__')==False and len(
 			T_cof.append(amplitude(A0,T_ges,p,q)[2])
 			a_cof.append(amplitude(A0,T_ges,p,q)[5])
 			a_cof.append(amplitude(A0,T_ges,p,q)[4])
-			f.write('%g  %1.9e %1.9e\n' % (sigma[k]*180./math.pi, R_cof[0], R_cof[1]))
-			g.write('%g  %1.9e %1.9e\n' % (sigma[k]*180./math.pi, T_cof[0], T_cof[1]))
-			h.write('%g  %4.9e %4.9e\n' % (sigma[k]*180./math.pi, a_cof[0], a_cof[1]))
+			f.write('%10.20e  %1.20e %1.20e\n' % (sigma[k]*180./math.pi, R_cof[0], R_cof[1]))
+			g.write('%10.20e  %1.20e %1.20e\n' % (sigma[k]*180./math.pi, T_cof[0], T_cof[1]))
+			h.write('%10.20e  %4.20e %4.20e\n' % (sigma[k]*180./math.pi, a_cof[0], a_cof[1]))
 
 #					      2.SINGLE CALCULATION AT ONE FREQUENCY
 elif hasattr(sigma,'__len__')==False and hasattr(beta0,'__len__')==False and len(w)==1:

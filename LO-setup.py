@@ -156,7 +156,7 @@ for i in xrange(0,3):
 		with open(str(L)+'_'+str(i+1)+str(j+1)+'.OUT','w') as f:
 			for k in xrange(0,len(epsilon)):
 				if w[k] != 0.0:
-					f.write('%g  %1.9e %1.9e\n' % (w[k], epsilon[k][i,j].real, epsilon[k][i,j].imag))
+					f.write('%10.20e  %1.15e %1.15e\n' % (w[k], epsilon[k][i,j].real, epsilon[k][i,j].imag))
 
 			
 	
