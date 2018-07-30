@@ -18,6 +18,7 @@ import glob
 import time
 import numpy as np
 import scipy as sp
+import mpmath as mpm
 
 # DEFINE INPUT PARAMETERS
 # General Parameters
@@ -47,7 +48,8 @@ def quartic_solve(alpha, beta, epsilon, omega):
 	coeff.append(alpha*B*F+beta*B*G+alpha*D*H+beta*D*C-alpha*E*G-alpha*C*E-beta*A*F-beta*A*H)
 	coeff.append(A*E*I+B*F*G+D*H*C-C*E*G-B*D*I-A*F*H)
 	
-	gamma1=np.roots(coeff)
+	#gamma1=np.roots(coeff)
+        gamma1=mpm.polyroots(coeff,maxsteps=100,extraprec=100)
 	gamma=np.zeros((4),'complex')
 	intu=intuition(gamma1)
 	if intu==False:
